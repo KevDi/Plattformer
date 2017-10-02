@@ -1,0 +1,216 @@
+package de.mjkd.platformer;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+
+import java.util.ArrayList;
+
+/**
+ * Created by reaste on 24.08.17.
+ */
+
+public class PlatformView extends SurfaceView implements Runnable {
+
+    private boolean debugging = true;
+    private volatile boolean running;
+    private Thread gameThread = null;
+
+    private Paint paint;
+    private Canvas canvas;
+    private SurfaceHolder surfaceHolder;
+
+    Context context;
+    long startFrameTime;
+    long timeThisFrame;
+    long fps;
+
+    private LevelManager lm;
+    private Viewport vp;
+    InputController ic;
+    SoundManager sm;
+
+    public PlatformView(Context context, int screenWidth, int screenHight) {
+        super(context);
+        this.context = context;
+        surfaceHolder = getHolder();
+        paint = new Paint();
+
+        vp = new Viewport(screenWidth, screenHight);
+
+        sm = new SoundManager();
+        sm.loadSound(context);
+
+        loadLevel("LevelCave", 10, 2);
+    }
+
+    public void loadLevel(String level, float px, float py) {
+        lm = null;
+
+        lm = new LevelManager(context, vp.getPixelsPerMetreX(), vp.getScreenWidth(), ic, level, px, py);
+
+        ic = new InputController(vp.getScreenWidth(), vp.getScreenHeight());
+
+        vp.setWorldCentre(lm.gameObjects.get(lm.playerIndex).getWorldLocation().x, lm.gameObjects.get(lm.playerIndex).getWorldLocation().y);
+    }
+
+    @Override
+    public void run() {
+        while(running) {
+            startFrameTime = System.currentTimeMillis();
+
+            update();
+            draw();
+
+            timeThisFrame = System.currentTimeMillis() - startFrameTime;
+            if (timeThisFrame >= 1) {
+                fps = 1000/timeThisFrame;
+            }
+        }
+    }
+
+    private void update() {
+        for (GameObject go : lm.gameObjects) {
+            if (go.isActive()) {
+                if (!vp.clipObjects(go.getWorldLocation().x, go.getWorldLocation().y, go.getWidth(), go.getHeight())) {
+                    go.setVisible(true);
+
+                    int hit = lm.player.checkCollisions(go.getRectHitBox());
+                    if (hit > 0) {
+                        switch(go.getType()) {
+                            default:
+                                if (hit == 1) {
+                                    lm.player.setxVelocity(0);
+                                    lm.player.setPressingRight(false);
+                                }
+
+                                if (hit == 2) {
+                                    lm.player.isFalling = false;
+                                }
+                                break;
+                        }
+                    }
+
+                    if (lm.isPlaying()) {
+                        go.update(fps, lm.gravity);
+                    }
+                } else {
+                    go.setVisible(false);
+                }
+            }
+        }
+        if (lm.isPlaying()) {
+            //Reset the players location as the world centre of the viewport
+            //if game is playing
+            vp.setWorldCentre(lm.gameObjects.get(lm.playerIndex)
+                            .getWorldLocation().x,
+                    lm.gameObjects.get(lm.playerIndex)
+                            .getWorldLocation().y);
+        }
+    }
+
+    private void draw() {
+        if (surfaceHolder.getSurface().isValid()) {
+            canvas = surfaceHolder.lockCanvas();
+            paint.setColor(Color.argb(255,0,0,255));
+            canvas.drawColor(Color.argb(255,0,0,255));
+
+            Rect toScreen2d = new Rect();
+
+            for (int layer = -1; layer <= 1; layer++) {
+                for (GameObject go : lm.gameObjects) {
+                    if (go.isVisible() && go.getWorldLocation().z == layer) {
+                        toScreen2d.set(vp.worldToScreen(go.getWorldLocation().x, go.getWorldLocation().y,go.getWidth(), go.getHeight()));
+                        if (go.isAnimated()) {
+                            //Get the next frame of the bitmap
+                            //Rotate if necessary
+                            if (go.getFacing() == 1) {
+                                //Rotate
+                                Matrix flipper = new Matrix();
+                                flipper.preScale(-1,1);
+                                Rect r = go.getRectToDraw(System.currentTimeMillis());
+                                Bitmap b = Bitmap.createBitmap(lm.bitmapsArray[lm.getBitmapIndex(go.getType())], r.left, r.top, r.width(), r.height(), flipper, true);
+                                canvas.drawBitmap(b, toScreen2d.left, toScreen2d.top, paint);
+                            } else {
+                                canvas.drawBitmap(lm.bitmapsArray[lm.getBitmapIndex(go.getType())],go.getRectToDraw(System.currentTimeMillis()), toScreen2d, paint);
+                            }
+                        } else {
+                            canvas.drawBitmap(lm.bitmapsArray[lm.getBitmapIndex(go.getType())], toScreen2d.left, toScreen2d.top, paint);
+                        }
+                    }
+                }
+            }
+
+            if (debugging) {
+                paint.setTextSize(16);
+                paint.setTextAlign(Paint.Align.LEFT);
+                paint.setColor(Color.argb(255,255,255,255));
+                canvas.drawText("fps:" + fps, 10, 60, paint);
+                canvas.drawText("num objects:" + lm.gameObjects.size(), 10, 80, paint);
+                canvas.drawText("num clipped:" + vp.getNumClipped(), 10, 100, paint);
+                canvas.drawText("playerX:" + lm.gameObjects.get(lm.playerIndex).getWorldLocation().x, 10, 120, paint);
+                canvas.drawText("playerY:" + lm.gameObjects.get(lm.playerIndex).getWorldLocation().y, 10, 140, paint);
+                canvas.drawText("Gravity:" +
+                        lm.gravity, 10, 160, paint);
+                canvas.drawText("X velocity:" +
+                                lm.gameObjects.get(lm.playerIndex).getxVelocity(),
+                        10, 180, paint);
+                canvas.drawText("Y velocity:" +
+                                lm.gameObjects.get(lm.playerIndex).getyVelocity(),
+                        10, 200, paint);
+                vp.resetNumClipped();
+            }
+
+            paint.setColor(Color.argb(80,255,255,255));
+            ArrayList<Rect> buttonsToDraw;
+            buttonsToDraw = ic.getButtons();
+
+            for (Rect rect : buttonsToDraw) {
+                RectF rf = new RectF(rect.left, rect.top, rect.right, rect.bottom);
+                canvas.drawRoundRect(rf, 15f,15f,paint);
+            }
+
+            if (!this.lm.isPlaying()) {
+                paint.setTextAlign(Paint.Align.CENTER);
+                paint.setColor(Color.argb(255,255,255,255));
+
+                paint.setTextSize(120);
+                canvas.drawText("Paused", vp.getScreenWidth() /2, vp.getScreenHeight() / 2, paint);
+            }
+
+            surfaceHolder.unlockCanvasAndPost(canvas);
+        }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (lm != null) {
+            ic.handleInput(event, lm, sm, vp);
+        }
+        return true;
+    }
+
+    public void pause() {
+        running = false;
+        try {
+            gameThread.join();
+        } catch (InterruptedException ex) {
+            Log.e("error", "failed to pause thread");
+        }
+    }
+
+    public void resume() {
+        running = true;
+        gameThread = new Thread(this);
+        gameThread.start();
+    }
+}
