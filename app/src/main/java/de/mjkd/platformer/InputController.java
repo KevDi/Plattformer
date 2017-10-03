@@ -70,8 +70,8 @@ public class InputController {
                             levelManager.player.setPressingRight(true);
                             levelManager.player.setPressingLeft(false);
                         } else if (left.contains(x,y)) {
-                            levelManager.player.setPressingRight(false);
                             levelManager.player.setPressingLeft(true);
+                            levelManager.player.setPressingRight(false);
                         } else if (jump.contains(x,y)) {
                             levelManager.player.startJump(soundManager);
                         } else if(shoot.contains(x,y)) {
@@ -96,8 +96,8 @@ public class InputController {
                             levelManager.player.setPressingRight(true);
                             levelManager.player.setPressingLeft(false);
                         } else if (left.contains(x, y)) {
-                            levelManager.player.setPressingLeft(true);
                             levelManager.player.setPressingRight(false);
+                            levelManager.player.setPressingLeft(true);
                         } else if (jump.contains(x, y)) {
                             levelManager.player.startJump(soundManager);
                         } else if (shoot.contains(x, y)) {

@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
@@ -38,6 +39,7 @@ public class PlatformView extends SurfaceView implements Runnable {
     private Viewport vp;
     InputController ic;
     SoundManager sm;
+    private PlayerState ps;
 
     public PlatformView(Context context, int screenWidth, int screenHight) {
         super(context);
@@ -49,6 +51,7 @@ public class PlatformView extends SurfaceView implements Runnable {
 
         sm = new SoundManager();
         sm.loadSound(context);
+        ps = new PlayerState();
 
         loadLevel("LevelCave", 10, 2);
     }
@@ -61,6 +64,8 @@ public class PlatformView extends SurfaceView implements Runnable {
         ic = new InputController(vp.getScreenWidth(), vp.getScreenHeight());
 
         vp.setWorldCentre(lm.gameObjects.get(lm.playerIndex).getWorldLocation().x, lm.gameObjects.get(lm.playerIndex).getWorldLocation().y);
+        PointF location = new PointF(px, py);
+        ps.saveLocation(location);
     }
 
     @Override
@@ -87,6 +92,35 @@ public class PlatformView extends SurfaceView implements Runnable {
                     int hit = lm.player.checkCollisions(go.getRectHitBox());
                     if (hit > 0) {
                         switch(go.getType()) {
+                            case 'c':
+                                sm.playSound("coin_pickup");
+                                go.setActive(false);
+                                go.setVisible(false);
+                                ps.gotCredit();
+                                if (hit != 2){
+                                    lm.player.restorePreviousVelocity();
+                                }
+                                break;
+                            case 'u':
+                                sm.playSound("gun_upgrade");
+                                go.setActive(false);
+                                go.setVisible(false);
+                                lm.player.bfg.updateRateOfFire();
+                                ps.increaseFireRate();
+                                if (hit != 2){
+                                    lm.player.restorePreviousVelocity();
+                                }
+                                break;
+                            case 'e':
+                                //extralife
+                                go.setActive(false);
+                                go.setVisible(false);
+                                sm.playSound("extra_life");
+                                ps.addLife();
+                                if (hit != 2){
+                                    lm.player.restorePreviousVelocity();
+                                }
+                                break;
                             default:
                                 if (hit == 1) {
                                     lm.player.setxVelocity(0);

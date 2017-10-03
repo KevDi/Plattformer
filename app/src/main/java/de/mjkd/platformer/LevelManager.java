@@ -61,6 +61,15 @@ public class LevelManager {
             case 'p':
                 index = 2;
                 break;
+            case 'c':
+                index = 3;
+                break;
+            case 'u':
+                index = 4;
+                break;
+            case 'e':
+                index = 5;
+                break;
             default:
                 index = 0;
                 break;
@@ -79,6 +88,15 @@ public class LevelManager {
                 break;
             case 'p':
                 index = 2;
+                break;
+            case 'c':
+                index = 3;
+                break;
+            case 'u':
+                index = 4;
+                break;
+            case 'e':
+                index = 5;
                 break;
             default:
                 index = 0;
@@ -108,6 +126,15 @@ public class LevelManager {
                             gameObjects.add(new Player(context, px, py, pixelsPerMetre));
                             playerIndex = currentIndex;
                             player = (Player)gameObjects.get(playerIndex);
+                            break;
+                        case 'c':
+                            gameObjects.add(new Coin(j,i,c));
+                            break;
+                        case 'u':
+                            gameObjects.add(new MachineGunUpgrade(j,i,c));
+                            break;
+                        case 'e':
+                            gameObjects.add(new ExtraLife(j,i,c));
                             break;
                     }
                     if (bitmapsArray[getBitmapIndex(c)] == null) {

@@ -168,5 +168,17 @@ public class Player extends GameObject {
     public boolean pullTrigger() {
         return bfg.shoot(this.getWorldLocation().x, this.getWorldLocation().y, getFacing(), getHeight());
     }
+
+    public void restorePreviousVelocity() {
+        if (!isJumping && !isFalling) {
+            if (getFacing() == LEFT) {
+                isPressingLeft = true;
+                setxVelocity(-MAX_X_VELOCITY);
+            } else {
+                isPressingRight = true;
+                setxVelocity(MAX_X_VELOCITY);
+            }
+        }
+    }
 }
 
