@@ -15,13 +15,15 @@ public class Player extends GameObject {
     RectHitBox rectHitBoxRight;
 
     final float MAX_X_VELOCITY = 10;
-    boolean isPressingRight = false;
-    boolean isPressingLeft = false;
 
     public boolean isFalling;
     private boolean isJumping;
     private long jumpTime;
     private long maxJumpTime = 700;
+
+    boolean isPressingRight = false;
+    boolean isPressingLeft = false;
+
 
     public MachineGun bfg;
 

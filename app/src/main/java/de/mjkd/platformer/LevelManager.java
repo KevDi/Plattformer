@@ -138,7 +138,12 @@ public class LevelManager {
                             break;
                     }
                     if (bitmapsArray[getBitmapIndex(c)] == null) {
-                        bitmapsArray[getBitmapIndex(c)] = gameObjects.get(currentIndex).prepareBitmap(context, gameObjects.get(currentIndex).getBitmapName(), pixelsPerMetre);
+                        bitmapsArray[getBitmapIndex(c)] =
+                                gameObjects.get(currentIndex)
+                                        .prepareBitmap(context,
+                                                gameObjects.get(currentIndex)
+                                                        .getBitmapName(),
+                                                pixelsPerMetre);
                     }
                 }
             }

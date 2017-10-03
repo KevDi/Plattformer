@@ -31,15 +31,16 @@ public class PlatformView extends SurfaceView implements Runnable {
     private SurfaceHolder surfaceHolder;
 
     Context context;
-    long startFrameTime;
-    long timeThisFrame;
-    long fps;
 
     private LevelManager lm;
     private Viewport vp;
     InputController ic;
     SoundManager sm;
     private PlayerState ps;
+
+    long startFrameTime;
+    long timeThisFrame;
+    long fps;
 
     public PlatformView(Context context, int screenWidth, int screenHight) {
         super(context);
@@ -63,7 +64,10 @@ public class PlatformView extends SurfaceView implements Runnable {
 
         ic = new InputController(vp.getScreenWidth(), vp.getScreenHeight());
 
-        vp.setWorldCentre(lm.gameObjects.get(lm.playerIndex).getWorldLocation().x, lm.gameObjects.get(lm.playerIndex).getWorldLocation().y);
+        vp.setWorldCentre(lm.gameObjects.get(lm.playerIndex)
+                .getWorldLocation().x,
+                lm.gameObjects.get(lm.playerIndex)
+                        .getWorldLocation().y);
         PointF location = new PointF(px, py);
         ps.saveLocation(location);
     }
@@ -74,6 +78,7 @@ public class PlatformView extends SurfaceView implements Runnable {
             startFrameTime = System.currentTimeMillis();
 
             update();
+
             draw();
 
             timeThisFrame = System.currentTimeMillis() - startFrameTime;
@@ -154,7 +159,9 @@ public class PlatformView extends SurfaceView implements Runnable {
 
     private void draw() {
         if (surfaceHolder.getSurface().isValid()) {
+
             canvas = surfaceHolder.lockCanvas();
+
             paint.setColor(Color.argb(255,0,0,255));
             canvas.drawColor(Color.argb(255,0,0,255));
 
@@ -163,7 +170,12 @@ public class PlatformView extends SurfaceView implements Runnable {
             for (int layer = -1; layer <= 1; layer++) {
                 for (GameObject go : lm.gameObjects) {
                     if (go.isVisible() && go.getWorldLocation().z == layer) {
-                        toScreen2d.set(vp.worldToScreen(go.getWorldLocation().x, go.getWorldLocation().y,go.getWidth(), go.getHeight()));
+                        toScreen2d.set(vp.worldToScreen
+                                (go.getWorldLocation().x,
+                                        go.getWorldLocation().y,
+                                        go.getWidth(),
+                                        go.getHeight()));
+
                         if (go.isAnimated()) {
                             //Get the next frame of the bitmap
                             //Rotate if necessary
@@ -172,13 +184,26 @@ public class PlatformView extends SurfaceView implements Runnable {
                                 Matrix flipper = new Matrix();
                                 flipper.preScale(-1,1);
                                 Rect r = go.getRectToDraw(System.currentTimeMillis());
-                                Bitmap b = Bitmap.createBitmap(lm.bitmapsArray[lm.getBitmapIndex(go.getType())], r.left, r.top, r.width(), r.height(), flipper, true);
-                                canvas.drawBitmap(b, toScreen2d.left, toScreen2d.top, paint);
+                                Bitmap b = Bitmap.createBitmap(lm.bitmapsArray[
+                                        lm.getBitmapIndex(go.getType())],
+                                        r.left,
+                                        r.top,
+                                        r.width(),
+                                        r.height(),
+                                        flipper,
+                                        true);
+                                canvas.drawBitmap(b,
+                                        toScreen2d.left,
+                                        toScreen2d.top, paint);
                             } else {
-                                canvas.drawBitmap(lm.bitmapsArray[lm.getBitmapIndex(go.getType())],go.getRectToDraw(System.currentTimeMillis()), toScreen2d, paint);
+                                canvas.drawBitmap(lm.bitmapsArray[lm.getBitmapIndex(go.getType())],
+                                        go.getRectToDraw(System.currentTimeMillis()),
+                                        toScreen2d, paint);
                             }
                         } else {
-                            canvas.drawBitmap(lm.bitmapsArray[lm.getBitmapIndex(go.getType())], toScreen2d.left, toScreen2d.top, paint);
+                            canvas.drawBitmap(lm.bitmapsArray[lm.getBitmapIndex(go.getType())],
+                                    toScreen2d.left,
+                                    toScreen2d.top, paint);
                         }
                     }
                 }

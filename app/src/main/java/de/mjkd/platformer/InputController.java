@@ -23,9 +23,15 @@ public class InputController {
         int buttonHeight = screenHeight / 7;
         int buttonPadding = screenWidth / 80;
 
-        left = new Rect(buttonPadding, screenHeight-buttonHeight-buttonPadding, buttonWidth, screenHeight - buttonPadding);
+        left = new Rect(buttonPadding,
+                screenHeight - buttonHeight - buttonPadding,
+                buttonWidth,
+                screenHeight - buttonPadding);
 
-        right = new Rect(buttonWidth + buttonPadding, screenHeight-buttonHeight-buttonPadding, buttonWidth + buttonPadding + buttonWidth, screenHeight - buttonPadding);
+        right = new Rect(buttonWidth + buttonPadding,
+                screenHeight - buttonHeight - buttonPadding,
+                buttonWidth + buttonPadding + buttonWidth,
+                screenHeight - buttonPadding);
 
         jump = new Rect(screenWidth - buttonWidth - buttonPadding,
                 screenHeight - buttonHeight - buttonPadding -
@@ -96,8 +102,8 @@ public class InputController {
                             levelManager.player.setPressingRight(true);
                             levelManager.player.setPressingLeft(false);
                         } else if (left.contains(x, y)) {
-                            levelManager.player.setPressingRight(false);
                             levelManager.player.setPressingLeft(true);
+                            levelManager.player.setPressingRight(false);
                         } else if (jump.contains(x, y)) {
                             levelManager.player.startJump(soundManager);
                         } else if (shoot.contains(x, y)) {

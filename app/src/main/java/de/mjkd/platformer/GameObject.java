@@ -11,16 +11,20 @@ import android.graphics.Rect;
 
 public abstract class GameObject {
 
+    private Animation anim = null;
+    private boolean animated;
+    private int animFps = 1;
+
     private RectHitBox rectHitBox = new RectHitBox();
+
     private float xVelocity;
     private float yVelocity;
     final int LEFT = -1;
-    final int RIGHT = -1;
+    final int RIGHT = 1;
     private int facing;
     private boolean moves = false;
 
     private Vector2Point5D worldLocation;
-
     private float height;
     private float width;
 
@@ -31,10 +35,6 @@ public abstract class GameObject {
 
     private String bitmapName;
 
-    private Animation anim = null;
-    private boolean animated;
-    private int animFps = 1;
-
     public abstract void update(long fps, float gravitiy);
 
     public String getBitmapName() {
@@ -42,7 +42,8 @@ public abstract class GameObject {
     }
 
     public Bitmap prepareBitmap(Context context, String bitmapName, int pixelsPerMetre) {
-        int resID = context.getResources().getIdentifier(bitmapName, "drawable", context.getPackageName());
+        int resID = context.getResources().getIdentifier(bitmapName,
+                "drawable", context.getPackageName());
 
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),resID);
 
@@ -187,7 +188,12 @@ public abstract class GameObject {
 
     public void setAnimated(Context context, int pixelsPerMetre, boolean animated) {
         this.animated = animated;
-        this.anim = new Animation(context, bitmapName, height, width, animFps, animFrameCount, pixelsPerMetre);
+        this.anim = new Animation(context, bitmapName,
+                height,
+                width,
+                animFps,
+                animFrameCount,
+                pixelsPerMetre);
     }
 
     public Rect getRectToDraw(long deltaTime) {
