@@ -70,6 +70,9 @@ public class LevelManager {
             case 'e':
                 index = 5;
                 break;
+            case 'd':
+                index = 6;
+                break;
             default:
                 index = 0;
                 break;
@@ -97,6 +100,9 @@ public class LevelManager {
                 break;
             case 'e':
                 index = 5;
+                break;
+            case 'd':
+                index = 6;
                 break;
             default:
                 index = 0;
@@ -135,6 +141,9 @@ public class LevelManager {
                             break;
                         case 'e':
                             gameObjects.add(new ExtraLife(j,i,c));
+                            break;
+                        case 'd':
+                            gameObjects.add(new Drone(j,i,c));
                             break;
                     }
                     if (bitmapsArray[getBitmapIndex(c)] == null) {

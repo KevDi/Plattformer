@@ -126,6 +126,17 @@ public class PlatformView extends SurfaceView implements Runnable {
                                     lm.player.restorePreviousVelocity();
                                 }
                                 break;
+                            case 'd':
+                                PointF location;
+                                //hit by drone
+                                sm.playSound("player_burn");
+                                ps.loseLife();
+                                location = new PointF(ps.loadLocation().x,
+                                        ps.loadLocation().y);
+                                lm.player.setWorldLocationX(location.x);
+                                lm.player.setWorldLocationY(location.y);
+                                lm.player.setxVelocity(0);
+                                break;
                             default:
                                 if (hit == 1) {
                                     lm.player.setxVelocity(0);
@@ -141,6 +152,11 @@ public class PlatformView extends SurfaceView implements Runnable {
 
                     if (lm.isPlaying()) {
                         go.update(fps, lm.gravity);
+
+                        if (go.getType() == 'd') {
+                            Drone d = (Drone) go;
+                            d.setWaypoint(lm.player.getWorldLocation());
+                        }
                     }
                 } else {
                     go.setVisible(false);
