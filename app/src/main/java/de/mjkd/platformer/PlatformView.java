@@ -150,6 +150,14 @@ public class PlatformView extends SurfaceView implements Runnable {
                 }
             }
 
+            paint.setColor(Color.argb(255,255,255,255));
+            for (int i = 0; i < lm.player.bfg.getNumBullets(); i++) {
+                // Pass in the x and y coods as usual
+                //then .25 and .05 for the bullet width and height
+                toScreen2d.set(vp.worldToScreen(lm.player.bfg.getBulletX(i),lm.player.bfg.getBulletY(i),.25f,.05f));
+                canvas.drawRect(toScreen2d, paint);
+            }
+
             if (debugging) {
                 paint.setTextSize(16);
                 paint.setTextAlign(Paint.Align.LEFT);

@@ -23,6 +23,8 @@ public class Player extends GameObject {
     private long jumpTime;
     private long maxJumpTime = 700;
 
+    public MachineGun bfg;
+
     public Player(Context context, float worldStartX, float worldStartY, int pixelsPerMetre) {
         final float HEIGHT = 2;
         final float WIDTH = 1;
@@ -56,6 +58,8 @@ public class Player extends GameObject {
         rectHitBoxHead = new RectHitBox();
         rectHitBoxLeft = new RectHitBox();
         rectHitBoxRight = new RectHitBox();
+
+        bfg = new MachineGun();
     }
 
     @Override
@@ -89,6 +93,8 @@ public class Player extends GameObject {
             this.setyVelocity(gravitiy);
             isFalling = true;
         }
+        bfg.update(fps, gravitiy);
+
         this.move(fps);
 
         Vector2Point5D location = getWorldLocation();
@@ -157,6 +163,10 @@ public class Player extends GameObject {
                 sm.playSound("jump");
             }
         }
+    }
+
+    public boolean pullTrigger() {
+        return bfg.shoot(this.getWorldLocation().x, this.getWorldLocation().y, getFacing(), getHeight());
     }
 }
 

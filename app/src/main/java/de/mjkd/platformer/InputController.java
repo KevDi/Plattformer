@@ -75,6 +75,9 @@ public class InputController {
                         } else if (jump.contains(x,y)) {
                             levelManager.player.startJump(soundManager);
                         } else if(shoot.contains(x,y)) {
+                            if (levelManager.player.pullTrigger()) {
+                                soundManager.playSound("shoot");
+                            }
 
                         } else if(pause.contains(x,y)) {
                             levelManager.switchPlayingStatus();
@@ -98,6 +101,9 @@ public class InputController {
                         } else if (jump.contains(x, y)) {
                             levelManager.player.startJump(soundManager);
                         } else if (shoot.contains(x, y)) {
+                            if (levelManager.player.pullTrigger()) {
+                                soundManager.playSound("shoot");
+                            }
                             //Handle shooting here
                         } else if (pause.contains(x, y)) {
                             levelManager.switchPlayingStatus();
