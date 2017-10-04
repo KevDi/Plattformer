@@ -137,6 +137,16 @@ public class PlatformView extends SurfaceView implements Runnable {
                                 lm.player.setWorldLocationY(location.y);
                                 lm.player.setxVelocity(0);
                                 break;
+                            case 'g':
+                                // Hit by guard
+                                sm.playSound("player_burn");
+                                ps.loseLife();
+                                location = new PointF(ps.loadLocation().x,
+                                        ps.loadLocation().y);
+                                lm.player.setWorldLocationX(location.x);
+                                lm.player.setWorldLocationY(location.y);
+                                lm.player.setxVelocity(0);
+                                break;
                             default:
                                 if (hit == 1) {
                                     lm.player.setxVelocity(0);

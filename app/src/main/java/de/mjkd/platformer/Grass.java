@@ -20,6 +20,8 @@ public class Grass extends GameObject {
         setWorldLocation(worldStartX, worldStartY, 0);
 
         setRectHitBox();
+
+        setTraversable();
     }
 
     @Override

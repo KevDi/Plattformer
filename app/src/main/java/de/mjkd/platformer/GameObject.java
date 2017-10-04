@@ -35,6 +35,8 @@ public abstract class GameObject {
 
     private String bitmapName;
 
+    private boolean traversable = false;
+
     public abstract void update(long fps, float gravitiy);
 
     public String getBitmapName() {
@@ -198,5 +200,13 @@ public abstract class GameObject {
 
     public Rect getRectToDraw(long deltaTime) {
         return anim.getCurrentFrame(deltaTime, xVelocity, isMoves());
+    }
+
+    public boolean isTraversable() {
+        return traversable;
+    }
+
+    public void setTraversable() {
+        this.traversable = true;
     }
 }
