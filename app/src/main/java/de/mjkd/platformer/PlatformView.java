@@ -160,6 +160,32 @@ public class PlatformView extends SurfaceView implements Runnable {
                         }
                     }
 
+                    for (int i = 0; i < lm.player.bfg.getNumBullets(); i++) {
+                        // Make a hitbox out of the current bullet
+                        RectHitBox r = new RectHitBox();
+                        r.setLeft(lm.player.bfg.getBulletX(i));
+                        r.setTop(lm.player.bfg.getBulletY(i));
+                        r.setRight(lm.player.bfg.getBulletX(i) + .1f);
+                        r.setBottom(lm.player.bfg.getBulletY(i) + .1f);
+
+                        if (go.getRectHitBox().intersects(r)) {
+                            // Collision detected
+                            // make bullet disapper until it
+                            // is respawned as a new bullet
+                            lm.player.bfg.hideBullet(i);
+
+                            if (go.getType() != 'g' && go.getType() != 'd') {
+                                sm.playSound("ricochet");
+                            } else if (go.getType() == 'g') {
+                                go.setWorldLocationX(go.getWorldLocation().x + 2 * (lm.player.bfg.getDirection(i)));
+                                sm.playSound("hit_guard");
+                            } else if (go.getType() == 'd') {
+                                sm.playSound("explode");
+                                go.setWorldLocation(-100, -100, 0);
+                            }
+                        }
+                    }
+
                     if (lm.isPlaying()) {
                         go.update(fps, lm.gravity);
 
