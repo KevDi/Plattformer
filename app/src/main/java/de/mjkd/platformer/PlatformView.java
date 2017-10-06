@@ -218,6 +218,67 @@ public class PlatformView extends SurfaceView implements Runnable {
         }
     }
 
+    private void drawBackground(int start, int stop) {
+
+        Rect fromRect1 = new Rect();
+        Rect toRect1 = new Rect();
+        Rect fromRect2 = new Rect();
+        Rect toRect2 = new Rect();
+
+        for (Background bg : lm.backgrounds) {
+            if (bg.z < start && bg.z > stop) {
+                // Is this layer in the Viewport?
+                // Clip anything off-screen
+                if (!vp.clipObjects(-1, bg.y, 1000, bg.height)) {
+                    float floatstartY = ((vp.getyCenter() -
+                            ((vp.getViewportWorldCentreY() - bg.y) *
+                                    vp.getPixelsPerMetreY())));
+                    int startY = (int)floatstartY;
+
+                    float floatendY = ((vp.getyCenter() -
+                            ((vp.getViewportWorldCentreY() - bg.endY) *
+                            vp.getPixelsPerMetreY())));
+                    int endY = (int)floatendY;
+
+                    // Define what portion of bitmaps to capture
+                    // and what coordinates to draw them at
+                    fromRect1 = new Rect(0,0, bg.width - bg.xClip, bg.height);
+
+                    toRect1 = new Rect(bg.xClip, startY, bg.width, endY);
+
+                    fromRect2 = new Rect(bg.width - bg.xClip, 0, bg.width, bg.height);
+
+                    toRect2 = new Rect(0, startY, bg.xClip, endY);
+                }
+
+                if (!bg.reversedFrist) {
+                    canvas.drawBitmap(bg.bitmap,
+                            fromRect1, toRect1, paint);
+                    canvas.drawBitmap(bg.bitmapReversed,
+                            fromRect2, toRect2, paint);
+                } else {
+                    canvas.drawBitmap(bg.bitmap,
+                            fromRect2, toRect2, paint);
+                    canvas.drawBitmap(bg.bitmapReversed,
+                            fromRect1, toRect1, paint);
+                }
+
+                // Calculate the next value for the backgrounds
+                // clipping position by modifying xClip
+                // and switching which background is drawn first,
+                // if necessary.
+                bg.xClip -= lm.player.getxVelocity() / (20 / bg.speed);
+                if (bg.xClip >= bg.width) {
+                    bg.xClip = 0;
+                    bg.reversedFrist = !bg.reversedFrist;
+                } else if (bg.xClip <= 0) {
+                    bg.xClip = bg.width;
+                    bg.reversedFrist = !bg.reversedFrist;
+                }
+            }
+        }
+    }
+
     private void draw() {
         if (surfaceHolder.getSurface().isValid()) {
 
@@ -225,6 +286,8 @@ public class PlatformView extends SurfaceView implements Runnable {
 
             paint.setColor(Color.argb(255,0,0,255));
             canvas.drawColor(Color.argb(255,0,0,255));
+
+            drawBackground(0, -3);
 
             Rect toScreen2d = new Rect();
 
@@ -277,6 +340,8 @@ public class PlatformView extends SurfaceView implements Runnable {
                 toScreen2d.set(vp.worldToScreen(lm.player.bfg.getBulletX(i),lm.player.bfg.getBulletY(i),.25f,.05f));
                 canvas.drawRect(toScreen2d, paint);
             }
+
+            drawBackground(4, 0);
 
             if (debugging) {
                 paint.setTextSize(16);

@@ -25,6 +25,7 @@ public class LevelManager {
 
     LevelData levelData;
     ArrayList<GameObject> gameObjects;
+    ArrayList<Background> backgrounds;
 
     ArrayList<Rect> currentButtons;
     Bitmap[] bitmapsArray;
@@ -43,6 +44,7 @@ public class LevelManager {
         bitmapsArray = new Bitmap[25];
 
         loadMapData(context, pixelsPerMetre, px, py);
+        loadBackgrounds(context, pixelsPerMetre, screenWidth);
 
         setWaypoints();
     }
@@ -371,6 +373,13 @@ public class LevelManager {
                     }
                 }
             }
+        }
+    }
+
+    private void loadBackgrounds(Context context, int pixelsPerMetre, int screenWidth) {
+        backgrounds = new ArrayList<>();
+        for (BackgroundData bgData : levelData.backgroundDataList) {
+            backgrounds.add(new Background(context, pixelsPerMetre, screenWidth, bgData));
         }
     }
 }
