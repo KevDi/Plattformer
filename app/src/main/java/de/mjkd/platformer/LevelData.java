@@ -37,4 +37,5 @@ import java.util.ArrayList;
 public class LevelData {
     ArrayList<String> tiles;
     ArrayList<BackgroundData> backgroundDataList;
+    ArrayList<Location> locations;
 }

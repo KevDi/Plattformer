@@ -54,7 +54,7 @@ public class PlatformView extends SurfaceView implements Runnable {
         sm.loadSound(context);
         ps = new PlayerState();
 
-        loadLevel("LevelCave", 10, 2);
+        loadLevel("LevelCave", 1, 16);
     }
 
     public void loadLevel(String level, float px, float py) {
@@ -64,12 +64,15 @@ public class PlatformView extends SurfaceView implements Runnable {
 
         ic = new InputController(vp.getScreenWidth(), vp.getScreenHeight());
 
+        PointF location = new PointF(px, py);
+        ps.saveLocation(location);
+        lm.player.bfg.setRateOfFire(ps.getFireRate());
+
         vp.setWorldCentre(lm.gameObjects.get(lm.playerIndex)
                 .getWorldLocation().x,
                 lm.gameObjects.get(lm.playerIndex)
                         .getWorldLocation().y);
-        PointF location = new PointF(px, py);
-        ps.saveLocation(location);
+
     }
 
     @Override
@@ -156,6 +159,12 @@ public class PlatformView extends SurfaceView implements Runnable {
                                 lm.player.setWorldLocationY(location.y);
                                 lm.player.setxVelocity(0);
                                 break;
+                            case 't':
+                                Teleport teleport = (Teleport)go;
+                                Location t = teleport.getTarget();
+                                loadLevel(t.level, t.x, t.y);
+                                sm.playSound("teleport");
+                                break;
                             default:
                                 if (hit == 1) {
                                     lm.player.setxVelocity(0);
@@ -215,6 +224,22 @@ public class PlatformView extends SurfaceView implements Runnable {
                             .getWorldLocation().x,
                     lm.gameObjects.get(lm.playerIndex)
                             .getWorldLocation().y);
+            if (lm.player.getWorldLocation().x < 0 ||
+                    lm.player.getWorldLocation().x > lm.mapWidth ||
+                    lm.player.getWorldLocation().y > lm.mapHeight) {
+                sm.playSound("player_burn");
+                ps.loseLife();
+                PointF location = new PointF(ps.loadLocation().x,
+                        ps.loadLocation().y);
+                lm.player.setWorldLocationX(location.x);
+                lm.player.setWorldLocationY(location.y);
+                lm.player.setxVelocity(0);
+            }
+            // Check if game is over
+            if (ps.getLives() == 0) {
+                ps = new PlayerState();
+                loadLevel("LevelCave", 1, 16);
+            }
         }
     }
 
@@ -284,8 +309,8 @@ public class PlatformView extends SurfaceView implements Runnable {
 
             canvas = surfaceHolder.lockCanvas();
 
-            paint.setColor(Color.argb(255,0,0,255));
-            canvas.drawColor(Color.argb(255,0,0,255));
+            paint.setColor(Color.argb(255,0,0,0));
+            canvas.drawColor(Color.argb(255,0,0,0));
 
             drawBackground(0, -3);
 
@@ -342,6 +367,27 @@ public class PlatformView extends SurfaceView implements Runnable {
             }
 
             drawBackground(4, 0);
+
+            int topSpace = vp.getPixelsPerMetreY() / 4;
+            int iconSize = vp.getPixelsPerMetreX();
+            int padding = vp.getPixelsPerMetreX() / 5;
+            int centring = vp.getPixelsPerMetreY() / 6;
+            paint.setTextSize(vp.getPixelsPerMetreY()/2);
+            paint.setTextAlign(Paint.Align.CENTER);
+            paint.setColor(Color.argb(100, 0, 0, 0));
+            canvas.drawRect(0,0,iconSize * 7.0f, topSpace*2 + iconSize,paint);
+            paint.setColor(Color.argb(255, 255, 255, 0));
+            canvas.drawBitmap(lm.getBitmap('e'), 0, topSpace, paint);
+            canvas.drawText("" + ps.getLives(), (iconSize * 1) + padding,
+                    (iconSize) - centring, paint);
+            canvas.drawBitmap(lm.getBitmap('c'), (iconSize * 2.5f) + padding,
+                    topSpace, paint);
+            canvas.drawText("" + ps.getCredits(), (iconSize * 3.5f) + padding
+                    * 2, (iconSize) - centring, paint);
+            canvas.drawBitmap(lm.getBitmap('u'), (iconSize * 5.0f) + padding,
+                    topSpace, paint);
+            canvas.drawText("" + ps.getFireRate(), (iconSize * 6.0f) + padding
+                    * 2, (iconSize) - centring, paint);
 
             if (debugging) {
                 paint.setTextSize(16);

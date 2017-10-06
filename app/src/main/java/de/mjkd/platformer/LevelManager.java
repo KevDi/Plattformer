@@ -37,6 +37,15 @@ public class LevelManager {
             case "LevelCave":
                 levelData = new LevelCave();
                 break;
+            case "LevelCity":
+                levelData = new LevelCity();
+                break;
+            case "LevelForest":
+                levelData = new LevelForest();
+                break;
+            case "LevelMountain":
+                levelData = new LevelMountain();
+                break;
         }
 
         gameObjects = new ArrayList<>();
@@ -122,6 +131,9 @@ public class LevelManager {
             case 'z':
                 index = 21;
                 break;
+            case 't':
+                index = 22;
+                break;
             default:
                 index = 0;
                 break;
@@ -198,6 +210,9 @@ public class LevelManager {
             case 'z':
                 index = 21;
                 break;
+            case 't':
+                index = 22;
+                break;
             default:
                 index = 0;
                 break;
@@ -209,6 +224,7 @@ public class LevelManager {
         char c;
 
         int currentIndex = -1;
+        int teleportIndex = -1;
 
         mapHeight = levelData.tiles.size();
         mapWidth = levelData.tiles.get(0).length();
@@ -296,6 +312,11 @@ public class LevelManager {
                         case 'z':
                             // Add a boulders to the gameObjects
                             gameObjects.add(new Boulders(j, i, c));
+                            break;
+                        case 't':
+                            // Add a teleport to the gameObjects
+                            teleportIndex++;
+                            gameObjects.add(new Teleport(j,i,c,levelData.locations.get(teleportIndex)));
                             break;
                     }
                     if (bitmapsArray[getBitmapIndex(c)] == null) {
