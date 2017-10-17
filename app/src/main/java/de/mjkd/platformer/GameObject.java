@@ -5,6 +5,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 
+import de.mjkd.platformer.util.Animation;
+import de.mjkd.platformer.util.RectHitBox;
+import de.mjkd.platformer.util.Vector2Point5D;
+
 /**
  * Created by reaste on 24.08.17.
  */
@@ -19,8 +23,8 @@ public abstract class GameObject {
 
     private float xVelocity;
     private float yVelocity;
-    final int LEFT = -1;
-    final int RIGHT = 1;
+    public final int LEFT = -1;
+    public final int RIGHT = 1;
     private int facing;
     private boolean moves = false;
 
@@ -147,7 +151,7 @@ public abstract class GameObject {
         this.active = active;
     }
 
-    void move(long fps) {
+    public void move(long fps) {
         if (xVelocity != 0) {
             this.worldLocation.x += xVelocity / fps;
         }
