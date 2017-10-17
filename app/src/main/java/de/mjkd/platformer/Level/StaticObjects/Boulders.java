@@ -10,7 +10,7 @@ import de.mjkd.platformer.GameObject;
 
 public class Boulders extends GameObject {
 
-    Boulders(float worldStartX, float worldStartY, char type) {
+    public Boulders(float worldStartX, float worldStartY, char type) {
         final float HEIGHT = 1;
         final float WIDTH = 3;
         setHeight(HEIGHT); // 1 metre tall

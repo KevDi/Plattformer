@@ -8,7 +8,7 @@ import de.mjkd.platformer.GameObject;
 
 public class Stone extends GameObject {
 
-    Stone(float worldStartX, float worldStartY, char type) {
+    public Stone(float worldStartX, float worldStartY, char type) {
         setTraversable();
         final float HEIGHT = 1;
         final float WIDTH = 1;

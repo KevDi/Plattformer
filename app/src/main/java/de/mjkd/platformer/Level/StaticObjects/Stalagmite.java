@@ -10,7 +10,7 @@ import de.mjkd.platformer.GameObject;
 
 public class Stalagmite extends GameObject {
 
-    Stalagmite(float worldStartX, float worldStartY, char type) {
+    public Stalagmite(float worldStartX, float worldStartY, char type) {
         final float HEIGHT = 3;
         final float WIDTH = 2;
         setHeight(HEIGHT);

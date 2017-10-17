@@ -11,7 +11,7 @@ import de.mjkd.platformer.GameObject;
 public class Lampost extends GameObject {
 
 
-    Lampost(float worldStartX, float worldStartY, char type) {
+    public Lampost(float worldStartX, float worldStartY, char type) {
         final float HEIGHT = 3;
         final float WIDTH = 1;
         setHeight(HEIGHT);

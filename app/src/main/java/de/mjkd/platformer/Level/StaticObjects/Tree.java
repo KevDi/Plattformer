@@ -10,7 +10,7 @@ import de.mjkd.platformer.GameObject;
 
 public class Tree extends GameObject {
 
-    Tree(float worldStartX, float worldStartY, char type) {
+    public Tree(float worldStartX, float worldStartY, char type) {
         final float HEIGHT = 4;
         final float WIDTH = 2;
         setWidth(WIDTH);

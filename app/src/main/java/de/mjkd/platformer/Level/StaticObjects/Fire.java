@@ -10,7 +10,7 @@ import de.mjkd.platformer.GameObject;
 
 public class Fire extends GameObject {
 
-    Fire(Context context, float worldStartX, float worldStartY, char type, int pixelsPerMetre) {
+    public Fire(Context context, float worldStartX, float worldStartY, char type, int pixelsPerMetre) {
 
         final int ANIMATION_FPS = 3;
         final int ANIMATION_FRAME_COUNT = 3;

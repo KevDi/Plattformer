@@ -26,7 +26,7 @@ public class Background {
     public float speed;
     public boolean isParallax; //Not currently used
 
-    Background(Context context, int yPixelsPerMetre, int screenWidth, BackgroundData data) {
+    public Background(Context context, int yPixelsPerMetre, int screenWidth, BackgroundData data) {
         int resID = context.getResources().getIdentifier(data.bitmapName, "drawable", context.getPackageName());
         bitmap = BitmapFactory.decodeResource(context.getResources(), resID);
 

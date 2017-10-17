@@ -9,7 +9,7 @@ import de.mjkd.platformer.GameObject;
 public class Concrete extends GameObject {
 
 
-    Concrete(float worldStartX, float worldStartY, char type) {
+    public Concrete(float worldStartX, float worldStartY, char type) {
         setTraversable();
         final float HEIGHT = 1;
         final float WIDTH = 1;

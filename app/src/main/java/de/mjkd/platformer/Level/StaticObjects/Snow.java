@@ -8,7 +8,7 @@ import de.mjkd.platformer.GameObject;
 
 public class Snow extends GameObject {
 
-    Snow(float worldStartX, float worldStartY, char type) {
+    public Snow(float worldStartX, float worldStartY, char type) {
         setTraversable();
         final float HEIGHT = 1;
         final float WIDTH = 1;

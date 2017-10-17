@@ -10,7 +10,7 @@ import de.mjkd.platformer.GameObject;
 
 public class Cart extends GameObject {
 
-    Cart(float worldStartX, float worldStartY, char type) {
+    public Cart(float worldStartX, float worldStartY, char type) {
         final float HEIGHT = 2;
         final float WIDTH = 3;
         setWidth(WIDTH);

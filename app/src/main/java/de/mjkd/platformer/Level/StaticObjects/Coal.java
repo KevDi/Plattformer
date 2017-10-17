@@ -8,7 +8,7 @@ import de.mjkd.platformer.GameObject;
 
 public class Coal extends GameObject {
 
-    Coal(float worldStartX, float worldStartY, char type) {
+    public Coal(float worldStartX, float worldStartY, char type) {
         setTraversable();
         final float HEIGHT = 1;
         final float WIDTH = 1;
