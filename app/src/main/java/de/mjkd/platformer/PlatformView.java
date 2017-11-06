@@ -32,7 +32,7 @@ import de.mjkd.platformer.util.Viewport;
 
 public class PlatformView extends SurfaceView implements Runnable {
 
-    private boolean debugging = true;
+    private boolean debugging = false;
     private volatile boolean running;
     private Thread gameThread = null;
 
