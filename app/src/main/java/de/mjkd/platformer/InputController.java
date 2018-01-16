@@ -5,6 +5,10 @@ import android.view.MotionEvent;
 
 import java.util.ArrayList;
 
+import de.mjkd.platformer.Level.LevelManager;
+import de.mjkd.platformer.util.SoundManager;
+import de.mjkd.platformer.util.Viewport;
+
 /**
  * Created by reaste on 26.08.17.
  */
